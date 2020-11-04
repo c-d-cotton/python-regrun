@@ -1,0 +1,96 @@
+\documentclass{article}
+
+% Packages:%{{{
+\usepackage{caption}
+\usepackage{mdframed}
+\usepackage[bottom]{footmisc} %footnotes at bottom of page
+\usepackage{titlesec} %adjust paragraphs
+\usepackage[nohead]{geometry} %[a4paper,landscape]
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{appendix} %\appendix \appendixpage
+\usepackage{bm} %\bm{1} bold font 1
+\usepackage{bbm} %\mathbbm{1} bold font 2
+\usepackage{booktabs} % includes toprule which is used in statsmodels/pandas to_latex commands
+\usepackage{color}
+\usepackage{enumitem} % allows to resume list
+\usepackage{float} %\begin{figure}[placement specifier] [H]-def. here,[h]-about here
+\usepackage{graphicx} %\begin{figure}\includegraphics[width=110mm]{name.jpg}
+\usepackage{longtable} % only used in highfreq/summary.tex
+\usepackage{setspace} %\onehalfspacing etc.
+\usepackage{subcaption} % allows subfigure
+\usepackage{tikz}
+\usepackage{url} %\url{}
+\usepackage{verbatim} %\begin{comment}
+
+% end packages
+\usepackage{hyperref}
+\usepackage[noabbrev]{cleveref} %\cref, also loaded in environment
+
+% Packages:%}}}
+
+% Theorem definitions:%{{{
+
+% Standard style:
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{assumption}{Assumption} % decided want different counter for this normally
+\newtheorem{remark}[theorem]{Remark}
+
+% Definition Style:
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+% \newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{exercise}[theorem]{Exercise}
+%}}}
+
+% Formatting:%{{{
+%General Spacing
+\newcommand{\mar}{0.9in} %for geometry command
+\RequirePackage{geometry} %[a4paper,landscape]
+\geometry{verbose,letterpaper,tmargin=\mar,bmargin=\mar,lmargin=\mar,rmargin=\mar,headheight=0in,headsep=0in,footskip=0.25in}
+
+\def\bodyspacing{\singlespacing}
+
+% Paragraphs:
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
+% Formatting:%}}}
+
+% Misc:%{{{
+\synctex=1 % makes it easier to read pdfs from vim (text editor)
+% Misc:%}}}
+
+\usepackage{multirow}
+
+\begin{document}
+
+\title{Statsmodels Tabular Test}
+\author{Chris Cotton}
+\date{\today}
+\maketitle
+
+\section{Multireg}
+\subsection{Full Tabular}
+
+\input{../temp/regrun/multiregtest_tabular.tex}
+
+\subsection{Tabular with Fewer X Coefficients Shown}
+
+\input{../temp/regrun/multiregtest_xcoeffreduce.tex}
+
+\subsection{Tabular with Different Parameters Shown}
+
+\input{../temp/regrun/multiregtest_paramchange.tex}
+
+\subsection{Merging Tabular Sections with Additional Section}
+
+\input{../temp/regrun/multiregtest_tabsecmerge.tex}
+
+\end{document}

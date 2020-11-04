@@ -1,0 +1,6 @@
+submodules/
+**/__pycache__/
+temp/
+
+latex/*
+!latex/test.tex
