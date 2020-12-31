@@ -2,57 +2,11 @@
 """
 Basic functions for running regressions and converting them into tables
 """
-# PYTHON_PREAMBLE_START_STANDARD:{{{
-
-# Christopher David Cotton (c)
-# http://www.cdcotton.com
-
-# modules needed for preamble
-import importlib
 import os
 from pathlib import Path
 import sys
 
-# Get full real filename
-__fullrealfile__ = os.path.abspath(__file__)
-
-# Function to get git directory containing this file
-def getprojectdir(filename):
-    curlevel = filename
-    while curlevel is not '/':
-        curlevel = os.path.dirname(curlevel)
-        if os.path.exists(curlevel + '/.git/'):
-            return(curlevel + '/')
-    return(None)
-
-# Directory of project
-__projectdir__ = Path(getprojectdir(__fullrealfile__))
-
-# Function to call functions from files by their absolute path.
-# Imports modules if they've not already been imported
-# First argument is filename, second is function name, third is dictionary containing loaded modules.
-modulesdict = {}
-def importattr(modulefilename, func, modulesdict = modulesdict):
-    # get modulefilename as string to prevent problems in <= python3.5 with pathlib -> os
-    modulefilename = str(modulefilename)
-    # if function in this file
-    if modulefilename == __fullrealfile__:
-        return(eval(func))
-    else:
-        # add file to moduledict if not there already
-        if modulefilename not in modulesdict:
-            # check filename exists
-            if not os.path.isfile(modulefilename):
-                raise Exception('Module not exists: ' + modulefilename + '. Function: ' + func + '. Filename called from: ' + __fullrealfile__ + '.')
-            # add directory to path
-            sys.path.append(os.path.dirname(modulefilename))
-            # actually add module to moduledict
-            modulesdict[modulefilename] = importlib.import_module(''.join(os.path.basename(modulefilename).split('.')[: -1]))
-
-        # get the actual function from the file and return it
-        return(getattr(modulesdict[modulefilename], func))
-
-# PYTHON_PREAMBLE_END:}}}
+__projectdir__ = Path(os.path.dirname(os.path.realpath(__file__)) + '/')
 
 import copy
 import decimal
@@ -170,7 +124,7 @@ def extenddf_test():
     df['z'] = [7,8,9]
     df['hello.z'] = [10, 11, 12]
 
-    df = importattr(__projectdir__ / Path('regrun_func.py'), 'extenddf')(df, ['L.x', 'F2.y', 'D.L1.z', 'log.z', 'hello.z'])
+    df = extenddf(df, ['L.x', 'F2.y', 'D.L1.z', 'log.z', 'hello.z'])
 
     print(df)
 
@@ -237,7 +191,7 @@ def genolsmatrices(yvar, Xvar, df, addconstant = True, Xappend = False, extenddf
             # take a copy of the dataframe to avoid 
             if copydf is True:
                 df[i] = copy.deepcopy(df[i])
-            df[i] = importattr(__projectdir__ / Path('regrun_func.py'), 'extenddf')(df[i], Xvar[i])
+            df[i] = extenddf(df[i], Xvar[i])
             
         
     ymatrices = []
@@ -508,7 +462,9 @@ def getmultiregtabular_sm(
     if paramtabnames is None:
         paramtabnames = paramregnames
 
-    ret = importattr(__projectdir__ / Path('submodules/python-tabular-general/tabular_func.py'), 'getmultiregtabular')(
+    sys.path.append(str(__projectdir__ / Path('submodules/python-tabular-general/')))
+    from tabular_func import getmultiregtabular
+    ret = getmultiregtabular(
     # necessary arguments for creating the basic tables
     ytabnames, xtabnames, paramtabnames, betamatrix, pvalmatrix, sematrix, parammatrix,
     # optional arguments for individual components of the table
@@ -590,10 +546,14 @@ def getmultiregtabular_test_tabsecmerge():
     # first generate basic list of list
     df_lofl = [['Data', 'full', 'full', 'full', 'first half']]
     # then covert to tabsec
-    df_tabsec = importattr(__projectdir__ / Path('submodules/python-tabular-general/tabular_func.py'), 'tabularconvert')(df_lofl)
+    sys.path.append(str(__projectdir__ / Path('submodules/python-tabular-general/')))
+    from tabular_func import tabularconvert
+    df_tabsec = tabularconvert(df_lofl)
 
     # merge tabsecs together
-    importattr(__projectdir__ / Path('submodules/python-tabular-general/tabular_func.py'), 'mergetabsecs')([ynames_tabsec, vcoeff_tabsec, param_tabsec, df_tabsec], colalign = 'l' * (len(modelfitlist) + 1), hlines = 'all', savename = __projectdir__ / Path('temp/regrun/multiregtest_tabsecmerge.tex'))
+    sys.path.append(str(__projectdir__ / Path('submodules/python-tabular-general/')))
+    from tabular_func import mergetabsecs
+    mergetabsecs([ynames_tabsec, vcoeff_tabsec, param_tabsec, df_tabsec], colalign = 'l' * (len(modelfitlist) + 1), hlines = 'all', savename = __projectdir__ / Path('temp/regrun/multiregtest_tabsecmerge.tex'))
 
 
 # Tabular - one cell is one regression NEED TO ADJUST:{{{1

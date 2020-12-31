@@ -72,7 +72,8 @@ def genivmatrices(Xmatrices, Ymatrices, Zmatrices, df = None, addconstant = True
                 df = copy.deepcopy(df)
             variables = list(set(Ymatrices + [i for j in Xmatrices for i in j] + [i for j in Zmatrices for i in j]))
 
-            df = importattr(__projectdir__ / Path('regrun_func.py'), 'extenddf')(df, variables)
+            from regrun_func import extenddf
+            df = extenddf(df, variables)
 
         # save Xnames since will need at the end
         ynames = Ymatrices[:]
@@ -134,7 +135,8 @@ def runiv(Xmatrices, Ymatrices, Zmatrices, dropmissing = True):
     results = []
 
     if dropmissing is True:
-        Xmatrices, Ymatrices, Zmatrices = importattr(__projectdir__ / Path('regrun_func.py'), 'dropmissingrows')([Xmatrices, Ymatrices, Zmatrices])
+        from regrun_func import dropmissingrows
+        Xmatrices, Ymatrices, Zmatrices = dropmissingrows([Xmatrices, Ymatrices, Zmatrices])
     else:
         missing = 'none'
 
@@ -161,17 +163,20 @@ def alliv(Xmatrices, Ymatrices, Zmatrices, savefolders = None, appendfolders = N
         tabularoptions['ynames'] = Ymatrices
 
     # generate matrices {{{
-    returndict = importattr(__projectdir__ / Path('regrun_func.py'), 'genivmatrices')(Xmatrices, Ymatrices, Zmatrices, **varmatrixoptions)
+    from regrun_func import genivmatrices
+    returndict = genivmatrices(Xmatrices, Ymatrices, Zmatrices, **varmatrixoptions)
     # }}}
 
     # run IV{{{
     if regrunfunction is None:
-        regrunfunction = importattr(__projectdir__ / Path('regrun_func.py'), 'runiv')
+        from regrun_func import runiv
+        regrunfunction = runiv
     results = regrunfunction(returndict['Xmatrices'], returndict['Ymatrices'], returndict['Zmatrices'], **regrunoptions)
     # }}}
 
     # now call allresults
-    importattr(__projectdir__ / Path('regrun_func.py'), 'allresults')(results, savefolders = savefolders, appendfolders = appendfolders, saveresultsoptions = saveresultsoptions, resultmatrixoptions = resultmatrixoptions, tabularoptions = tabularoptions, tableoptions = tableoptions)
+    from regrun_func import allresults
+    allresults(results, savefolders = savefolders, appendfolders = appendfolders, saveresultsoptions = saveresultsoptions, resultmatrixoptions = resultmatrixoptions, tabularoptions = tabularoptions, tableoptions = tableoptions)
         
     
 
