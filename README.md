@@ -1,6 +1,10 @@
 # Introduction
 Functions to run regression in Python.
 
+NOT UP-TO-DATE
+DELETED PYTHON-TABULAR-GENERAL
+DELETED PYTHON-TEXOUTPUT
+
 # Setup
 Run setup_submodules.sh to add in required submodules.
 
