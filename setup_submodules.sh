@@ -28,17 +28,13 @@ cd submodules/
 # for each of the following submodule names
 for submodulename in $submodulenames; do
     # git clone the submodule to the submodules folder
-    echo $submodulename
     if [ -d "$submodulename" ]; then
-    echo boohoo
         cd $submodulename
         git pull
         cd ..
     else
-    echo cooioo
         git clone https://github.com/c-d-cotton/"$submodulename"/
     fi
-    echo 123
 
     # run setup.sh file in the submodule if that file exists
     if [ -f "$submodulename"/setup_submodules.sh ]; then
